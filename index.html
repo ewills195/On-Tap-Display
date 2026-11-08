@@ -9,8 +9,8 @@
     <style>
         :root {
             --bg-color: #0f172a;
-            --card-bg: rgba(15, 23, 42, 0.45); /* Highly transparent frosted cards */
-            --stats-bg: rgba(15, 23, 42, 0.35); /* Highly transparent inner stats/charts background */
+            --card-bg: rgba(15, 23, 42, 0.45);
+            --stats-bg: rgba(15, 23, 42, 0.35);
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
             --accent: #fbbf24;
@@ -34,7 +34,6 @@
             display: flex;
             flex-direction: column;
             padding: 1rem 1.5rem;
-            /* Lighter backdrop gradient so background.jpg shines through vividly */
             background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.35)), url('background.jpg');
             background-size: cover;
             background-position: center;
@@ -137,11 +136,12 @@
             flex-grow: 1;
         }
 
-        /* Side-by-side layout for Left Tap and Right Tap */
+        /* Side-by-side layout for On Tap section */
         #tap-container {
             flex-direction: row;
             overflow-x: auto;
             overflow-y: hidden;
+            gap: 1rem;
         }
 
         #tap-container .card {
@@ -405,6 +405,8 @@
                 map[batchId] = 'Left Tap';
             } else if (current === 'Left Tap') {
                 map[batchId] = 'Right Tap';
+            } else if (current === 'Right Tap') {
+                map[batchId] = 'On Deck';
             } else {
                 delete map[batchId];
             }
@@ -480,10 +482,11 @@
             }
             if (cleaned) saveTapAssignments(assignments);
 
-            const order = { 'Left Tap': 1, 'Right Tap': 2 };
+            // Strict ordering: Left Tap (1), Right Tap (2), On Deck (3), Unassigned (4)
+            const order = { 'Left Tap': 1, 'Right Tap': 2, 'On Deck': 3 };
             const sorted = [...batches].sort((a, b) => {
-                const rankA = order[assignments[a._id]] || 3;
-                const rankB = order[assignments[b._id]] || 3;
+                const rankA = order[assignments[a._id]] || 4;
+                const rankB = order[assignments[b._id]] || 4;
                 return rankA - rankB;
             });
 
