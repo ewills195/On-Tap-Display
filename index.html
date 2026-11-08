@@ -444,8 +444,8 @@
             for (const batch of batches) {
                 const name = getBatchName(batch);
                 const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
-                const og = batch.measuredOg || batch.recipe?.og || 'N/A';
-                const estFg = batch.recipe?.fg || 'N/A';
+                const og = batch.measuredOg || batch.recipe?.og;
+                const estFg = batch.recipe?.fg;
                 const batchNo = batch.batchNo ? `#${batch.batchNo}` : '';
                 const canvasId = `chart-${batch._id}`;
 
@@ -458,8 +458,18 @@
                 }
 
                 const latestReading = readings.length > 0 ? readings[readings.length - 1] : null;
-                const latestSg = latestReading && latestReading.sg != null ? latestReading.sg.toFixed(3) : (batch.measuredFg || 'N/A');
+                const latestSg = latestReading && latestReading.sg != null ? latestReading.sg : batch.measuredFg;
                 const latestTemp = latestReading && latestReading.temp != null ? cToF(latestReading.temp).toFixed(1) + '°F' : 'N/A';
+
+                // Calculate Attenuation percentage
+                let attenuationDisplay = 'N/A';
+                if (og != null && latestSg != null && estFg != null && og > estFg) {
+                    const attenuation = ((og - latestSg) / (og - estFg)) * 100;
+                    attenuationDisplay = Math.min(Math.max(attenuation, 0), 100).toFixed(0) + '%';
+                }
+
+                const ogDisplay = og != null ? og.toFixed(3) : 'N/A';
+                const sgDisplay = latestSg != null ? Number(latestSg).toFixed(3) : 'N/A';
 
                 const card = document.createElement('div');
                 card.className = 'card fermenting';
@@ -469,10 +479,10 @@
                         <div class="beer-style">${style}</div>
                     </div>
                     <div class="stats-grid four-col">
-                        <div class="stat-box"><div class="label">OG</div><div class="value">${typeof og === 'number' ? og.toFixed(3) : og}</div></div>
-                        <div class="stat-box"><div class="label">SG</div><div class="value">${latestSg}</div></div>
-                        <div class="stat-box"><div class="label">FG</div><div class="value">${typeof estFg === 'number' ? estFg.toFixed(3) : estFg}</div></div>
+                        <div class="stat-box"><div class="label">SG</div><div class="value">${sgDisplay}</div></div>
                         <div class="stat-box"><div class="label">Temp</div><div class="value" style="color: #fb923c;">${latestTemp}</div></div>
+                        <div class="stat-box"><div class="label">Atten.</div><div class="value" style="color: #38bdf8;">${attenuationDisplay}</div></div>
+                        <div class="stat-box"><div class="label">OG</div><div class="value">${ogDisplay}</div></div>
                     </div>
                     <div class="chart-container">
                         <canvas id="${canvasId}"></canvas>
