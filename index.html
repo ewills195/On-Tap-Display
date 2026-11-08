@@ -9,8 +9,8 @@
     <style>
         :root {
             --bg-color: #0f172a;
-            --card-bg: rgba(15, 23, 42, 0.45);
-            --stats-bg: rgba(15, 23, 42, 0.35);
+            --card-bg: rgba(15, 23, 42, 0.28); /* Highly transparent unified card background */
+            --stats-bg: rgba(15, 23, 42, 0.22); /* Highly transparent inner stats/charts background */
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
             --accent: #fbbf24;
@@ -34,7 +34,7 @@
             display: flex;
             flex-direction: column;
             padding: 1rem 1.5rem;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.35)), url('background.jpg');
+            background-image: linear-gradient(rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.3)), url('background.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -48,7 +48,7 @@
             border-bottom: 2px solid rgba(255, 255, 255, 0.15); 
             width: 100%;
             flex-shrink: 0;
-            background: rgba(15, 23, 42, 0.3);
+            background: rgba(15, 23, 42, 0.25);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             padding: 0.75rem 1rem;
@@ -78,7 +78,7 @@
         }
         
         .settings-btn { 
-            background: rgba(51, 65, 85, 0.6); 
+            background: rgba(51, 65, 85, 0.5); 
             color: var(--text-main); 
             border: 1px solid rgba(255, 255, 255, 0.15); 
             padding: 0.5rem 1rem; 
@@ -89,7 +89,7 @@
             transition: background 0.2s; 
             backdrop-filter: blur(4px);
         }
-        .settings-btn:hover { background: rgba(71, 85, 105, 0.8); }
+        .settings-btn:hover { background: rgba(71, 85, 105, 0.7); }
 
         /* Vertical stacking for portrait displays */
         .dashboard-grid {
@@ -151,12 +151,12 @@
         
         .card { 
             background: var(--card-bg); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-radius: 12px; 
             padding: 1.25rem; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            border: 1px solid rgba(255, 255, 255, 0.18); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
             position: relative; 
             overflow: hidden; 
             display: flex; 
@@ -170,11 +170,15 @@
         .card.fermenting::before { background: var(--ferment-accent); }
         .card.planning::before { background: var(--plan-accent); }
         
-        /* Grayed out style for On Deck beers */
+        /* Grayed out style for On Deck beers with slightly more opaque text */
         .card.on-deck {
-            opacity: 0.55;
-            background: rgba(15, 23, 42, 0.25);
-            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(15, 23, 42, 0.22);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .card.on-deck .beer-header,
+        .card.on-deck .stats-grid,
+        .card.on-deck .beer-footer {
+            opacity: 0.82;
         }
         .card.on-deck::before {
             background: #64748b;
@@ -196,7 +200,7 @@
         }
 
         .tap-badge {
-            background: rgba(51, 65, 85, 0.6);
+            background: rgba(51, 65, 85, 0.5);
             color: var(--text-muted);
             border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 0.25rem 0.65rem;
@@ -210,7 +214,7 @@
             transition: all 0.2s;
             backdrop-filter: blur(4px);
         }
-        .tap-badge:hover { background: rgba(71, 85, 105, 0.8); color: #fff; }
+        .tap-badge:hover { background: rgba(71, 85, 105, 0.7); color: #fff; }
         .tap-badge.assigned {
             background: var(--accent);
             color: #000;
@@ -255,7 +259,7 @@
             100% { opacity: 1; transform: scale(1); }
         }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: var(--stats-bg); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; text-align: center; flex-shrink: 0; align-items: center; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: var(--stats-bg); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; text-align: center; flex-shrink: 0; align-items: center; border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
         .stat-box .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
         .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
@@ -279,19 +283,19 @@
             background: var(--stats-bg); 
             padding: 0.75rem; 
             border-radius: 8px; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(4px);
         }
 
-        .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.15); padding-top: 0.6rem; flex-shrink: 0; }
+        .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 0.6rem; flex-shrink: 0; }
 
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(8px); }
-        .modal-content { background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(12px); padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 450px; border: 1px solid rgba(255,255,255,0.2); }
+        .modal-content { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 450px; border: 1px solid rgba(255,255,255,0.2); }
         .modal-content h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
-        .form-group input { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(15, 23, 42, 0.6); color: #fff; font-size: 1rem; }
+        .form-group input { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(15, 23, 42, 0.5); color: #fff; font-size: 1rem; }
         .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 1rem; }
         .save-btn:hover { background: #fbbf24; }
 
@@ -523,7 +527,6 @@
                 const badgeText = assignedTap || 'Assign Tap';
                 const badgeClass = assignedTap ? 'tap-badge assigned' : 'tap-badge';
                 
-                // Add 'on-deck' class to card if assigned to On Deck
                 const cardClass = assignedTap === 'On Deck' ? 'card on-deck' : 'card';
 
                 const card = document.createElement('div');
