@@ -19,7 +19,6 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
-        /* Lock full viewport - absolutely no page scrolling */
         html, body {
             height: 100vh;
             width: 100vw;
@@ -62,7 +61,6 @@
         .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
         .settings-btn:hover { background: #475569; }
 
-        /* Flex layout so visible columns automatically expand to fill empty space */
         .dashboard-grid {
             display: flex;
             gap: 1.5rem;
@@ -100,7 +98,6 @@
             flex-grow: 1;
         }
         
-        /* Cards stretch to fill column height */
         .card { 
             background: var(--card-bg); 
             border-radius: 12px; 
@@ -120,17 +117,39 @@
         .card.planning::before { background: var(--plan-accent); }
         
         .beer-header { margin-bottom: 1rem; flex-shrink: 0; }
+        .beer-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
         .beer-name { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .beer-style { font-size: 1rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card.fermenting .beer-style { color: var(--ferment-accent); }
         .card.planning .beer-style { color: var(--plan-accent); }
+
+        /* Tap assignment button */
+        .tap-badge {
+            background: #334155;
+            color: var(--text-muted);
+            border: 1px solid #475569;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .tap-badge:hover { background: #475569; color: #fff; }
+        .tap-badge.assigned {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
         
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: #0f172a; padding: 0.85rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; flex-shrink: 0; }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
         .stat-box .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
         .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; }
 
-        /* Chart container takes up all remaining vertical room inside the card */
         .chart-container { 
             position: relative; 
             flex-grow: 1; 
@@ -204,6 +223,7 @@
 
     <script>
         let activeCharts = [];
+        let cachedCompleted = [];
 
         function openSettings() {
             document.getElementById('userId').value = localStorage.getItem('bf_user_id') || '';
@@ -222,6 +242,34 @@
             } else {
                 alert('Please enter both User ID and API Key.');
             }
+        }
+
+        function getTapAssignments() {
+            try {
+                return JSON.parse(localStorage.getItem('bf_tap_assignments') || '{}');
+            } catch {
+                return {};
+            }
+        }
+
+        function saveTapAssignments(map) {
+            localStorage.setItem('bf_tap_assignments', JSON.stringify(map));
+        }
+
+        function cycleTapAssignment(batchId) {
+            const map = getTapAssignments();
+            const current = map[batchId] || 'Unassigned';
+            
+            if (current === 'Unassigned') {
+                map[batchId] = 'Left Tap';
+            } else if (current === 'Left Tap') {
+                map[batchId] = 'Right Tap';
+            } else {
+                delete map[batchId];
+            }
+
+            saveTapAssignments(map);
+            renderCompleted(cachedCompleted);
         }
 
         function getBatchName(batch) {
@@ -262,6 +310,7 @@
                     apiFetch('batches?status=Planning&complete=true', userId, apiKey)
                 ]);
 
+                cachedCompleted = completed;
                 renderCompleted(completed);
                 await renderFermenting(fermenting, userId, apiKey);
                 renderPlanning(planning);
@@ -279,8 +328,28 @@
                 return;
             }
 
+            // Clean up archived/removed batches from localStorage
+            const activeIds = new Set(batches.map(b => b._id));
+            const assignments = getTapAssignments();
+            let cleaned = false;
+            for (const id of Object.keys(assignments)) {
+                if (!activeIds.has(id)) {
+                    delete assignments[id];
+                    cleaned = true;
+                }
+            }
+            if (cleaned) saveTapAssignments(assignments);
+
+            // Sort: Left Tap first, Right Tap second, Unassigned last
+            const order = { 'Left Tap': 1, 'Right Tap': 2 };
+            const sorted = [...batches].sort((a, b) => {
+                const rankA = order[assignments[a._id]] || 3;
+                const rankB = order[assignments[b._id]] || 3;
+                return rankA - rankB;
+            });
+
             container.innerHTML = '';
-            batches.forEach(batch => {
+            sorted.forEach(batch => {
                 const name = getBatchName(batch);
                 const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
                 const abv = batch.abv ? batch.abv.toFixed(1) + '%' : (batch.recipe?.abv ? batch.recipe.abv.toFixed(1) + '%' : 'N/A');
@@ -288,11 +357,18 @@
                 const srm = batch.color || batch.recipe?.color || 'N/A';
                 const batchNo = batch.batchNo ? `#${batch.batchNo}` : '';
 
+                const assignedTap = assignments[batch._id];
+                const badgeText = assignedTap || 'Assign Tap';
+                const badgeClass = assignedTap ? 'tap-badge assigned' : 'tap-badge';
+
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
                     <div class="beer-header">
-                        <div class="beer-name">${name}</div>
+                        <div class="beer-header-top">
+                            <div class="beer-name">${name}</div>
+                            <button class="${badgeClass}" onclick="cycleTapAssignment('${batch._id}')">${badgeText}</button>
+                        </div>
                         <div class="beer-style">${style}</div>
                     </div>
                     <div class="stats-grid">
