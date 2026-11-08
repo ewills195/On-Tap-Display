@@ -18,38 +18,105 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; padding: 2rem; }
-
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid #334155; padding-bottom: 1rem; max-width: 1400px; width: 100%; margin-left: auto; margin-right: auto; }
-        h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(45deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+        /* Lock body to exact viewport dimensions - no scrolling */
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 2rem;
+        }
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 0.75rem; 
+            border-bottom: 2px solid #334155; 
+            padding-bottom: 0.5rem; 
+            width: 100%;
+            flex-shrink: 0;
+        }
+        h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(45deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
         .settings-btn:hover { background: #475569; }
 
-        .section-wrapper { max-width: 1400px; width: 100%; margin: 0 auto 3rem auto; }
-        .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); }
+        /* Main layout container that scales to fill remaining height */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            flex-grow: 1;
+            min-height: 0; /* Critical for flex child shrinking */
+            margin-bottom: 0.5rem;
+        }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; width: 100%; }
+        .column-section {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .section-title { 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            margin-bottom: 0.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            color: var(--text-main);
+            flex-shrink: 0;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+            min-height: 0;
+            flex-grow: 1;
+        }
         
-        .card { background: var(--card-bg); border-radius: 16px; padding: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); border: 1px solid #334155; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            padding: 1.25rem; 
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); 
+            border: 1px solid #334155; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
         .card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--accent); }
         .card.fermenting::before { background: var(--ferment-accent); }
         .card.planning::before { background: var(--plan-accent); }
         
-        .beer-header { margin-bottom: 1.5rem; }
-        .beer-name { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
-        .beer-style { font-size: 1.1rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .beer-header { margin-bottom: 0.75rem; }
+        .beer-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .beer-style { font-size: 0.95rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card.fermenting .beer-style { color: var(--ferment-accent); }
         .card.planning .beer-style { color: var(--plan-accent); }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; background: #0f172a; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; text-align: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: #0f172a; padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; text-align: center; }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
-        .stat-box .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .stat-box .value { font-size: 1.2rem; font-weight: 700; color: #fff; margin-top: 0.2rem; }
+        .stat-box .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .stat-box .value { font-size: 1.05rem; font-weight: 700; color: #fff; margin-top: 0.1rem; }
 
-        .chart-container { position: relative; height: 190px; width: 100%; margin-bottom: 1.5rem; background: #0f172a; padding: 0.75rem; border-radius: 10px; }
+        .chart-container { position: relative; height: 130px; width: 100%; margin-bottom: 0.75rem; background: #0f172a; padding: 0.5rem; border-radius: 8px; }
 
-        .beer-footer { font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 1rem; }
+        .beer-footer { font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 0.5rem; }
 
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
@@ -61,7 +128,7 @@
         .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 1rem; }
         .save-btn:hover { background: #fbbf24; }
 
-        .status-msg { text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem; background: var(--card-bg); border-radius: 12px; border: 1px dashed #334155; }
+        .status-msg { text-align: center; color: var(--text-muted); font-size: 1rem; padding: 1.5rem; background: var(--card-bg); border-radius: 10px; border: 1px dashed #334155; }
     </style>
 </head>
 <body>
@@ -71,24 +138,27 @@
         <button class="settings-btn" onclick="openSettings()">⚙️ Settings</button>
     </header>
 
-    <div class="section-wrapper">
-        <div class="section-title">🍻 On Tap</div>
-        <div id="tap-container" class="grid">
-            <div class="status-msg">Loading taps...</div>
+    <!-- 3-Column Layout that fits strictly inside the viewable screen -->
+    <div class="dashboard-grid">
+        <div class="column-section">
+            <div class="section-title">🍻 On Tap</div>
+            <div id="tap-container" class="cards-container">
+                <div class="status-msg">Loading taps...</div>
+            </div>
         </div>
-    </div>
 
-    <div class="section-wrapper">
-        <div class="section-title">🫧 Fermenting</div>
-        <div id="fermenting-container" class="grid">
-            <div class="status-msg">Loading fermenting batches...</div>
+        <div class="column-section">
+            <div class="section-title">🫧 Fermenting</div>
+            <div id="fermenting-container" class="cards-container">
+                <div class="status-msg">Loading batches...</div>
+            </div>
         </div>
-    </div>
 
-    <div class="section-wrapper">
-        <div class="section-title">📅 Up Next</div>
-        <div id="planning-container" class="grid">
-            <div class="status-msg">Loading upcoming brews...</div>
+        <div class="column-section">
+            <div class="section-title">📅 Up Next</div>
+            <div id="planning-container" class="cards-container">
+                <div class="status-msg">Loading brews...</div>
+            </div>
         </div>
     </div>
 
@@ -174,14 +244,14 @@
 
             } catch (error) {
                 console.error(error);
-                document.getElementById('tap-container').innerHTML = `<div class="status-msg" style="color: #ef4444;">❌ Failed to load data: ${error.message}</div>`;
+                document.getElementById('tap-container').innerHTML = `<div class="status-msg" style="color: #ef4444;">❌ Error: ${error.message}</div>`;
             }
         }
 
         function renderCompleted(batches) {
             const container = document.getElementById('tap-container');
             if (batches.length === 0) {
-                container.innerHTML = `<div class="status-msg">No completed beers on tap right now.</div>`;
+                container.innerHTML = `<div class="status-msg">No beers on tap.</div>`;
                 return;
             }
 
@@ -208,7 +278,7 @@
                     </div>
                     <div class="beer-footer">
                         <span>Batch ${batchNo}</span>
-                        <span>Status: On Tap</span>
+                        <span>On Tap</span>
                     </div>
                 `;
                 container.appendChild(card);
@@ -218,7 +288,7 @@
         async function renderFermenting(batches, userId, apiKey) {
             const container = document.getElementById('fermenting-container');
             if (batches.length === 0) {
-                container.innerHTML = `<div class="status-msg">No beers currently fermenting.</div>`;
+                container.innerHTML = `<div class="status-msg">No active fermentation.</div>`;
                 return;
             }
 
@@ -240,12 +310,8 @@
                 }
 
                 const latestReading = readings.length > 0 ? readings[readings.length - 1] : null;
-                const latestSg = latestReading && latestReading.sg != null
-                    ? latestReading.sg.toFixed(3) 
-                    : (batch.measuredFg || 'N/A');
-                const latestTemp = latestReading && latestReading.temp != null
-                    ? cToF(latestReading.temp).toFixed(1) + '°F'
-                    : 'N/A';
+                const latestSg = latestReading && latestReading.sg != null ? latestReading.sg.toFixed(3) : (batch.measuredFg || 'N/A');
+                const latestTemp = latestReading && latestReading.temp != null ? cToF(latestReading.temp).toFixed(1) + '°F' : 'N/A';
 
                 const card = document.createElement('div');
                 card.className = 'card fermenting';
@@ -256,8 +322,8 @@
                     </div>
                     <div class="stats-grid four-col">
                         <div class="stat-box"><div class="label">OG</div><div class="value">${typeof og === 'number' ? og.toFixed(3) : og}</div></div>
-                        <div class="stat-box"><div class="label">Current SG</div><div class="value">${latestSg}</div></div>
-                        <div class="stat-box"><div class="label">Target FG</div><div class="value">${typeof estFg === 'number' ? estFg.toFixed(3) : estFg}</div></div>
+                        <div class="stat-box"><div class="label">SG</div><div class="value">${latestSg}</div></div>
+                        <div class="stat-box"><div class="label">FG</div><div class="value">${typeof estFg === 'number' ? estFg.toFixed(3) : estFg}</div></div>
                         <div class="stat-box"><div class="label">Temp</div><div class="value" style="color: #fb923c;">${latestTemp}</div></div>
                     </div>
                     <div class="chart-container">
@@ -265,7 +331,7 @@
                     </div>
                     <div class="beer-footer">
                         <span>Batch ${batchNo}</span>
-                        <span>${readings.length} Readings</span>
+                        <span>Fermenting</span>
                     </div>
                 `;
                 container.appendChild(card);
@@ -282,22 +348,22 @@
                             labels: labels,
                             datasets: [
                                 {
-                                    label: 'Gravity (SG)',
+                                    label: 'SG',
                                     data: sgPoints,
                                     borderColor: '#38bdf8',
                                     backgroundColor: 'rgba(56, 189, 248, 0.15)',
                                     borderWidth: 2,
-                                    pointRadius: 2,
+                                    pointRadius: 0,
                                     fill: true,
                                     tension: 0.3,
                                     yAxisID: 'y'
                                 },
                                 {
-                                    label: 'Temp (°F)',
+                                    label: 'Temp',
                                     data: tempPoints,
                                     borderColor: '#fb923c',
-                                    borderWidth: 2,
-                                    borderDash: [4, 4],
+                                    borderWidth: 1.5,
+                                    borderDash: [3, 3],
                                     pointRadius: 0,
                                     fill: false,
                                     tension: 0.3,
@@ -312,21 +378,21 @@
                             plugins: {
                                 legend: {
                                     display: true,
-                                    labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } }
+                                    labels: { color: '#94a3b8', boxWidth: 8, font: { size: 10 } }
                                 }
                             },
                             scales: {
-                                x: { ticks: { color: '#94a3b8', maxTicksLimit: 6 }, grid: { display: false } },
+                                x: { ticks: { color: '#94a3b8', maxTicksLimit: 4, font: { size: 9 } }, grid: { display: false } },
                                 y: {
                                     type: 'linear',
                                     position: 'left',
-                                    ticks: { color: '#38bdf8' },
+                                    ticks: { color: '#38bdf8', font: { size: 9 } },
                                     grid: { color: '#334155' }
                                 },
                                 y1: {
                                     type: 'linear',
                                     position: 'right',
-                                    ticks: { color: '#fb923c', callback: v => v + '°' },
+                                    ticks: { color: '#fb923c', font: { size: 9 }, callback: v => v + '°' },
                                     grid: { drawOnChartArea: false }
                                 }
                             }
@@ -346,17 +412,17 @@
                 .sort((a, b) => a.brewDate - b.brewDate);
 
             if (upcoming.length === 0) {
-                container.innerHTML = `<div class="status-msg">No upcoming brews scheduled with a future brew date.</div>`;
+                container.innerHTML = `<div class="status-msg">No upcoming brews.</div>`;
                 return;
             }
 
-            container.innerHTML = '';
+            container.innerHTML = "";
             upcoming.forEach(batch => {
                 const name = getBatchName(batch);
                 const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
                 const estAbv = batch.recipe?.abv ? batch.recipe.abv.toFixed(1) + '%' : 'N/A';
                 const estIbu = batch.recipe?.ibu || 'N/A';
-                const brewDateStr = new Date(batch.brewDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+                const brewDateStr = new Date(batch.brewDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
                 const batchNo = batch.batchNo ? `#${batch.batchNo}` : '';
 
                 const card = document.createElement('div');
@@ -367,13 +433,13 @@
                         <div class="beer-style">${style}</div>
                     </div>
                     <div class="stats-grid">
-                        <div class="stat-box"><div class="label">Brew Date</div><div class="value" style="font-size: 1rem;">${brewDateStr}</div></div>
+                        <div class="stat-box"><div class="label">Brew Date</div><div class="value" style="font-size: 0.95rem;">${brewDateStr}</div></div>
                         <div class="stat-box"><div class="label">Est. ABV</div><div class="value">${estAbv}</div></div>
                         <div class="stat-box"><div class="label">Est. IBU</div><div class="value">${estIbu}</div></div>
                     </div>
                     <div class="beer-footer">
                         <span>Batch ${batchNo}</span>
-                        <span>Status: Planned</span>
+                        <span>Planned</span>
                     </div>
                 `;
                 container.appendChild(card);
