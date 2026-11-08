@@ -19,6 +19,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
+        /* Lock full viewport - absolutely no page scrolling */
         html, body {
             height: 100vh;
             width: 100vw;
@@ -123,7 +124,6 @@
         .card.fermenting .beer-style { color: var(--ferment-accent); }
         .card.planning .beer-style { color: var(--plan-accent); }
 
-        /* Tap assignment button */
         .tap-badge {
             background: #334155;
             color: var(--text-muted);
@@ -328,7 +328,6 @@
                 return;
             }
 
-            // Clean up archived/removed batches from localStorage
             const activeIds = new Set(batches.map(b => b._id));
             const assignments = getTapAssignments();
             let cleaned = false;
@@ -340,7 +339,6 @@
             }
             if (cleaned) saveTapAssignments(assignments);
 
-            // Sort: Left Tap first, Right Tap second, Unassigned last
             const order = { 'Left Tap': 1, 'Right Tap': 2 };
             const sorted = [...batches].sort((a, b) => {
                 const rankA = order[assignments[a._id]] || 3;
@@ -467,8 +465,7 @@
                                     label: 'Temp',
                                     data: tempPoints,
                                     borderColor: '#fb923c',
-                                    borderWidth: 1.5,
-                                    borderDash: [3, 3],
+                                    borderWidth: 2,
                                     pointRadius: 0,
                                     fill: false,
                                     tension: 0.3,
