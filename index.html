@@ -62,10 +62,9 @@
         .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
         .settings-btn:hover { background: #475569; }
 
-        /* Dashboard layout filling remaining vertical space */
+        /* Flex layout so visible columns automatically expand to fill empty space */
         .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
             gap: 1.5rem;
             width: 100%;
             flex-grow: 1;
@@ -76,6 +75,8 @@
         .column-section {
             display: flex;
             flex-direction: column;
+            flex: 1;
+            min-width: 0;
             min-height: 0;
         }
 
@@ -167,25 +168,21 @@
     </header>
 
     <div class="dashboard-grid">
-        <div class="column-section">
+        <div id="tap-section" class="column-section">
             <div class="section-title">🍻 On Tap</div>
             <div id="tap-container" class="cards-container">
                 <div class="status-msg">Loading taps...</div>
             </div>
         </div>
 
-        <div class="column-section">
+        <div id="fermenting-section" class="column-section" style="display: none;">
             <div class="section-title">🫧 Fermenting</div>
-            <div id="fermenting-container" class="cards-container">
-                <div class="status-msg">Loading batches...</div>
-            </div>
+            <div id="fermenting-container" class="cards-container"></div>
         </div>
 
-        <div class="column-section">
+        <div id="planning-section" class="column-section" style="display: none;">
             <div class="section-title">📅 Up Next</div>
-            <div id="planning-container" class="cards-container">
-                <div class="status-msg">Loading brews...</div>
-            </div>
+            <div id="planning-container" class="cards-container"></div>
         </div>
     </div>
 
@@ -313,13 +310,18 @@
         }
 
         async function renderFermenting(batches, userId, apiKey) {
+            const section = document.getElementById('fermenting-section');
             const container = document.getElementById('fermenting-container');
+            
             if (batches.length === 0) {
-                container.innerHTML = `<div class="status-msg">No active fermentation.</div>`;
+                section.style.display = 'none';
+                container.innerHTML = '';
                 return;
             }
 
+            section.style.display = 'flex';
             container.innerHTML = '';
+
             for (const batch of batches) {
                 const name = getBatchName(batch);
                 const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
@@ -431,6 +433,7 @@
         }
 
         function renderPlanning(batches) {
+            const section = document.getElementById('planning-section');
             const container = document.getElementById('planning-container');
             const now = Date.now();
             
@@ -439,11 +442,14 @@
                 .sort((a, b) => a.brewDate - b.brewDate);
 
             if (upcoming.length === 0) {
-                container.innerHTML = `<div class="status-msg">No upcoming brews.</div>`;
+                section.style.display = 'none';
+                container.innerHTML = '';
                 return;
             }
 
-            container.innerHTML = "";
+            section.style.display = 'flex';
+            container.innerHTML = '';
+
             upcoming.forEach(batch => {
                 const name = getBatchName(batch);
                 const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
