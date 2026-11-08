@@ -134,7 +134,7 @@
 
                 container.innerHTML = '';
                 batches.forEach(batch => {
-                    const name = batch.name || batch.recipe?.name || 'Unknown Beer';
+                    const name = (batch.name && batch.name !== 'Batch') ? batch.name : (batch.recipe?.name || batch.name || 'Unknown Beer');
                     const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
                     const abv = batch.abv ? batch.abv.toFixed(1) + '%' : (batch.recipe?.abv ? batch.recipe.abv.toFixed(1) + '%' : 'N/A');
                     const ibu = batch.ibu || batch.recipe?.ibu || 'N/A';
@@ -145,8 +145,8 @@
                     card.className = 'card';
                     card.innerHTML = `
                         <div class="beer-header">
-                            <div class="beer-style">${style}</div>
                             <div class="beer-name">${name}</div>
+                            <div class="beer-style">${style}</div>
                         </div>
                         <div class="stats-grid">
                             <div class="stat-box">
