@@ -9,7 +9,8 @@
     <style>
         :root {
             --bg-color: #0f172a;
-            --card-bg: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.78); /* Semi-transparent card background */
+            --stats-bg: rgba(15, 23, 42, 0.65); /* Semi-transparent inner stats/charts background */
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #f59e0b;
@@ -33,7 +34,7 @@
             display: flex;
             flex-direction: column;
             padding: 1rem 1.5rem;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('background.jpg');
+            background-image: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), url('background.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -44,10 +45,14 @@
             justify-content: space-between; 
             align-items: center; 
             margin-bottom: 1rem; 
-            border-bottom: 2px solid #334155; 
+            border-bottom: 2px solid rgba(51, 65, 85, 0.8); 
             padding-bottom: 0.75rem; 
             width: 100%;
             flex-shrink: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
         }
 
         .brand-container {
@@ -64,7 +69,7 @@
 
         h1 { font-size: 1.85rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(45deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
+        .settings-btn { background: rgba(51, 65, 85, 0.9); color: var(--text-main); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
         .settings-btn:hover { background: #475569; }
 
         /* Vertical stacking for portrait displays */
@@ -100,6 +105,7 @@
             gap: 0.5rem; 
             color: var(--text-main);
             flex-shrink: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .cards-container {
@@ -125,10 +131,12 @@
         
         .card { 
             background: var(--card-bg); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-radius: 12px; 
             padding: 1.25rem; 
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); 
-            border: 1px solid #334155; 
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); 
+            border: 1px solid rgba(51, 65, 85, 0.6); 
             position: relative; 
             overflow: hidden; 
             display: flex; 
@@ -143,7 +151,7 @@
         
         .beer-header { margin-bottom: 0.75rem; flex-shrink: 0; }
         .beer-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
-        .beer-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .beer-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .beer-style { font-size: 0.95rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card.fermenting .beer-style { color: var(--ferment-accent); }
         .card.planning .beer-style { color: var(--plan-accent); }
@@ -156,9 +164,9 @@
         }
 
         .tap-badge {
-            background: #334155;
+            background: rgba(51, 65, 85, 0.85);
             color: var(--text-muted);
-            border: 1px solid #475569;
+            border: 1px solid rgba(71, 85, 105, 0.8);
             padding: 0.25rem 0.65rem;
             border-radius: 6px;
             font-size: 0.75rem;
@@ -181,9 +189,9 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            background: rgba(34, 197, 94, 0.12);
+            background: rgba(34, 197, 94, 0.18);
             color: var(--live-green);
-            border: 1px solid rgba(34, 197, 94, 0.35);
+            border: 1px solid rgba(34, 197, 94, 0.4);
             padding: 0.25rem 0.6rem;
             border-radius: 6px;
             font-size: 0.7rem;
@@ -208,7 +216,7 @@
             100% { opacity: 1; transform: scale(1); }
         }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: #0f172a; padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; text-align: center; flex-shrink: 0; align-items: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: var(--stats-bg); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; text-align: center; flex-shrink: 0; align-items: center; border: 1px solid rgba(51, 65, 85, 0.4); }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
         .stat-box .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
         .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
@@ -228,16 +236,17 @@
             width: 100%; 
             min-height: 150px;
             margin-bottom: 0.75rem; 
-            background: #0f172a; 
+            background: var(--stats-bg); 
             padding: 0.75rem; 
             border-radius: 8px; 
+            border: 1px solid rgba(51, 65, 85, 0.4);
         }
 
-        .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 0.6rem; flex-shrink: 0; }
+        .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(51, 65, 85, 0.6); padding-top: 0.6rem; flex-shrink: 0; }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 450px; border: 1px solid #334155; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .modal-content { background: #1e293b; padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 450px; border: 1px solid #334155; }
         .modal-content h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
@@ -245,7 +254,7 @@
         .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 1rem; }
         .save-btn:hover { background: #fbbf24; }
 
-        .status-msg { text-align: center; color: var(--text-muted); font-size: 1rem; padding: 1.5rem; background: var(--card-bg); border-radius: 10px; border: 1px dashed #334155; width: 100%; }
+        .status-msg { text-align: center; color: var(--text-muted); font-size: 1rem; padding: 1.5rem; background: var(--card-bg); border-radius: 10px; border: 1px dashed #334155; width: 100%; backdrop-filter: blur(4px); }
     </style>
 </head>
 <body>
@@ -616,7 +625,7 @@
                                     type: 'linear',
                                     position: 'left',
                                     ticks: { color: '#38bdf8', font: { size: 10 } },
-                                    grid: { color: '#334155' }
+                                    grid: { color: 'rgba(51, 65, 85, 0.4)' }
                                 },
                                 y1: {
                                     type: 'linear',
