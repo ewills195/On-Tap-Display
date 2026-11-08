@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On Tap - Brewfather Display</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #f59e0b;
+            --accent-glow: rgba(245, 158, 11, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; padding: 2rem; }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid #334155; padding-bottom: 1rem; }
+        h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(45deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+        .settings-btn:hover { background: #475569; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; width: 100%; max-width: 1400px; margin: 0 auto; }
+        
+        .card { background: var(--card-bg); border-radius: 16px; padding: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); border: 1px solid #334155; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--accent); }
+        
+        .beer-header { margin-bottom: 1.5rem; }
+        .beer-name { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+        .beer-style { font-size: 1.1rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; background: #0f172a; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; text-align: center; }
+        .stat-box .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .stat-box .value { font-size: 1.25rem; font-weight: 700; color: #fff; margin-top: 0.2rem; }
+
+        .beer-footer { font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 1rem; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 450px; border: 1px solid #334155; }
+        .modal-content h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 1rem; }
+        .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 1rem; }
+        .save-btn:hover { background: #fbbf24; }
+
+        .status-msg { text-align: center; color: var(--text-muted); font-size: 1.2rem; margin-top: 4rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍺 On Tap</h1>
+        <button class="settings-btn" onclick="openSettings()">⚙️ Settings</button>
+    </header>
+
+    <div id="tap-container" class="grid">
+        <div class="status-msg">Loading taps or please configure your API credentials in Settings...</div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>Brewfather API Settings</h2>
+            <div class="form-group">
+                <label for="userId">User ID</label>
+                <input type="text" id="userId" placeholder="Enter your Brewfather User ID">
+            </div>
+            <div class="form-group">
+                <label for="apiKey">API Key</label>
+                <input type="password" id="apiKey" placeholder="Enter your Brewfather API Key">
+            </div>
+            <button class="save-btn" onclick="saveSettings()">Save & Connect</button>
+        </div>
+    </div>
+
+    <script>
+        function openSettings() {
+            document.getElementById('userId').value = localStorage.getItem('bf_user_id') || '';
+            document.getElementById('apiKey').value = localStorage.getItem('bf_api_key') || '';
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+
+        function saveSettings() {
+            const userId = document.getElementById('userId').value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if(userId && apiKey) {
+                localStorage.setItem('bf_user_id', userId);
+                localStorage.setItem('bf_api_key', apiKey);
+                document.getElementById('settingsModal').style.display = 'none';
+                fetchTaps();
+            } else {
+                alert('Please enter both User ID and API Key.');
+            }
+        }
+
+        async function fetchTaps() {
+            const userId = localStorage.getItem('bf_user_id');
+            const apiKey = localStorage.getItem('bf_api_key');
+            const container = document.getElementById('tap-container');
+
+            if (!userId || !apiKey) {
+                container.innerHTML = `<div class="status-msg">⚠️ Please click <b>Settings</b> in the top right to enter your Brewfather API credentials.</div>`;
+                openSettings();
+                return;
+            }
+
+            container.innerHTML = `<div class="status-msg">Refreshing taps from Brewfather...</div>`;
+
+            try {
+                // Using v2 batches endpoint with complete=true to pull recipe details like style and ABV
+                const response = await fetch('https://api.brewfather.app/v2/batches?status=Completed&complete=true', {
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(userId + ':' + apiKey),
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+
+                const batches = await response.json();
+
+                if (batches.length === 0) {
+                    container.innerHTML = `<div class="status-msg">No completed beers on tap right now! Change a batch status to 'Completed' in Brewfather.</div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                batches.forEach(batch => {
+                    const name = batch.name || batch.recipe?.name || 'Unknown Beer';
+                    const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
+                    const abv = batch.abv ? batch.abv.toFixed(1) + '%' : (batch.recipe?.abv ? batch.recipe.abv.toFixed(1) + '%' : 'N/A');
+                    const ibu = batch.ibu || batch.recipe?.ibu || 'N/A';
+                    const srm = batch.color || batch.recipe?.color || 'N/A';
+                    const batchNo = batch.batchNo ? `#${batch.batchNo}` : '';
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="beer-header">
+                            <div class="beer-style">${style}</div>
+                            <div class="beer-name">${name}</div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="label">ABV</div>
+                                <div class="value">${abv}</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="label">IBU</div>
+                                <div class="value">${ibu}</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="label">SRM</div>
+                                <div class="value">${srm}</div>
+                            </div>
+                        </div>
+                        <div class="beer-footer">
+                            <span>Batch ${batchNo}</span>
+                            <span>Status: Completed</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<div class="status-msg" style="color: #ef4444;">❌ Failed to load batches. Check your API credentials or CORS restrictions.<br><small>${error.message}</small></div>`;
+            }
+        }
+
+        // Load on start
+        window.onload = () => {
+            if (localStorage.getItem('bf_user_id')) {
+                fetchTaps();
+                // Auto-refresh every 5 minutes (300000 ms)
+                setInterval(fetchTaps, 300000);
+            } else {
+                openSettings();
+            }
+        };
+    </script>
+</body>
+</html>
