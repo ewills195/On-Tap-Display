@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brewery Dashboard - Brewfather Display</title>
+    <title>BadgerGander Homebrewery - On Tap</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -19,7 +19,6 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
-        /* Lock body to exact viewport dimensions - no scrolling */
         html, body {
             height: 100vh;
             width: 100vw;
@@ -44,19 +43,31 @@
             width: 100%;
             flex-shrink: 0;
         }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brewery-logo {
+            height: 52px;
+            width: auto;
+            object-fit: contain;
+        }
+
         h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(45deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
         .settings-btn:hover { background: #475569; }
 
-        /* Main layout container that scales to fill remaining height */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
             width: 100%;
             flex-grow: 1;
-            min-height: 0; /* Critical for flex child shrinking */
+            min-height: 0;
             margin-bottom: 0.5rem;
         }
 
@@ -134,11 +145,13 @@
 <body>
 
     <header>
-        <h1>🍺 Brewery Dashboard</h1>
+        <div class="brand-container">
+            <img src="logo.svg" alt="BadgerGander Homebrewery Logo" class="brewery-logo">
+            <h1>BadgerGander Homebrewery</h1>
+        </div>
         <button class="settings-btn" onclick="openSettings()">⚙️ Settings</button>
     </header>
 
-    <!-- 3-Column Layout that fits strictly inside the viewable screen -->
     <div class="dashboard-grid">
         <div class="column-section">
             <div class="section-title">🍻 On Tap</div>
