@@ -147,8 +147,8 @@
         
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: #0f172a; padding: 0.85rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; flex-shrink: 0; }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
-        .stat-box .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+        .stat-box .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .stat-box .value { font-size: 1.1rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
 
         .beer-glass-icon {
             width: 16px;
@@ -461,7 +461,7 @@
                 const latestSg = latestReading && latestReading.sg != null ? latestReading.sg : batch.measuredFg;
                 const latestTemp = latestReading && latestReading.temp != null ? cToF(latestReading.temp).toFixed(1) + '°F' : 'N/A';
 
-                // Calculate Attenuation percentage
+                // Calculate Apparent Attenuation percentage based on Target FG
                 let attenuationDisplay = 'N/A';
                 if (og != null && latestSg != null && estFg != null && og > estFg) {
                     const attenuation = ((og - latestSg) / (og - estFg)) * 100;
@@ -481,7 +481,7 @@
                     <div class="stats-grid four-col">
                         <div class="stat-box"><div class="label">SG</div><div class="value">${sgDisplay}</div></div>
                         <div class="stat-box"><div class="label">Temp</div><div class="value" style="color: #fb923c;">${latestTemp}</div></div>
-                        <div class="stat-box"><div class="label">Atten.</div><div class="value" style="color: #38bdf8;">${attenuationDisplay}</div></div>
+                        <div class="stat-box"><div class="label">App. Att.</div><div class="value" style="color: #38bdf8;">${attenuationDisplay}</div></div>
                         <div class="stat-box"><div class="label">OG</div><div class="value">${ogDisplay}</div></div>
                     </div>
                     <div class="chart-container">
