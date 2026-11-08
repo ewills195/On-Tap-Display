@@ -164,17 +164,29 @@
             justify-content: space-between;
             flex-grow: 1;
             min-height: 0;
+            transition: opacity 0.3s;
         }
         .card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--accent); }
         .card.fermenting::before { background: var(--ferment-accent); }
         .card.planning::before { background: var(--plan-accent); }
         
+        /* Grayed out style for On Deck beers */
+        .card.on-deck {
+            opacity: 0.55;
+            background: rgba(15, 23, 42, 0.25);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        .card.on-deck::before {
+            background: #64748b;
+        }
+
         .beer-header { margin-bottom: 0.75rem; flex-shrink: 0; }
         .beer-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
         .beer-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 4px rgba(0,0,0,0.7); }
         .beer-style { font-size: 0.95rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
         .card.fermenting .beer-style { color: var(--ferment-accent); }
         .card.planning .beer-style { color: var(--plan-accent); }
+        .card.on-deck .beer-style { color: #94a3b8; }
 
         .batch-no {
             font-weight: 400;
@@ -203,6 +215,11 @@
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
+        }
+        .card.on-deck .tap-badge.assigned {
+            background: #64748b;
+            color: #fff;
+            border-color: #64748b;
         }
 
         /* Live Data Indicator */
@@ -505,9 +522,12 @@
                 const assignedTap = assignments[batch._id];
                 const badgeText = assignedTap || 'Assign Tap';
                 const badgeClass = assignedTap ? 'tap-badge assigned' : 'tap-badge';
+                
+                // Add 'on-deck' class to card if assigned to On Deck
+                const cardClass = assignedTap === 'On Deck' ? 'card on-deck' : 'card';
 
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = cardClass;
                 card.innerHTML = `
                     <div class="beer-header">
                         <div class="beer-header-top">
