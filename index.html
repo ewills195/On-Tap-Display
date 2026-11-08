@@ -32,7 +32,7 @@
         body {
             display: flex;
             flex-direction: column;
-            padding: 1rem 2rem;
+            padding: 1rem 1.5rem;
         }
 
         header { 
@@ -58,18 +58,20 @@
             object-fit: contain;
         }
 
-        h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(45deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 { font-size: 1.85rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(45deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .settings-btn { background: #334155; color: var(--text-main); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
         .settings-btn:hover { background: #475569; }
 
+        /* Vertical stacking for portrait displays */
         .dashboard-grid {
             display: flex;
-            gap: 1.5rem;
+            flex-direction: column;
+            gap: 1.25rem;
             width: 100%;
             flex-grow: 1;
             min-height: 0; 
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .column-section {
@@ -80,10 +82,15 @@
             min-height: 0;
         }
 
+        /* Give Fermenting extra vertical space for the graph */
+        #fermenting-section {
+            flex: 1.6;
+        }
+
         .section-title { 
-            font-size: 1.25rem; 
+            font-size: 1.2rem; 
             font-weight: 700; 
-            margin-bottom: 0.75rem; 
+            margin-bottom: 0.6rem; 
             display: flex; 
             align-items: center; 
             gap: 0.5rem; 
@@ -99,11 +106,23 @@
             min-height: 0;
             flex-grow: 1;
         }
+
+        /* Side-by-side layout for Left Tap and Right Tap */
+        #tap-container {
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        #tap-container .card {
+            flex: 1;
+            min-width: 0;
+        }
         
         .card { 
             background: var(--card-bg); 
             border-radius: 12px; 
-            padding: 1.5rem; 
+            padding: 1.25rem; 
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); 
             border: 1px solid #334155; 
             position: relative; 
@@ -118,10 +137,10 @@
         .card.fermenting::before { background: var(--ferment-accent); }
         .card.planning::before { background: var(--plan-accent); }
         
-        .beer-header { margin-bottom: 1rem; flex-shrink: 0; }
+        .beer-header { margin-bottom: 0.75rem; flex-shrink: 0; }
         .beer-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
-        .beer-name { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .beer-style { font-size: 1rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .beer-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .beer-style { font-size: 0.95rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card.fermenting .beer-style { color: var(--ferment-accent); }
         .card.planning .beer-style { color: var(--plan-accent); }
 
@@ -178,16 +197,18 @@
             100% { opacity: 1; transform: scale(1); }
         }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: #0f172a; padding: 0.85rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; flex-shrink: 0; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: #0f172a; padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; text-align: center; flex-shrink: 0; align-items: center; }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
         .stat-box .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .stat-box .value { font-size: 1.1rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+        .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
 
+        /* Larger Beer Glass Graphic for clear SRM color visibility */
         .beer-glass-icon {
-            width: 16px;
-            height: 22px;
+            width: 30px;
+            height: 40px;
             display: inline-block;
             vertical-align: middle;
+            flex-shrink: 0;
         }
 
         .chart-container { 
@@ -195,13 +216,13 @@
             flex-grow: 1; 
             width: 100%; 
             min-height: 150px;
-            margin-bottom: 1rem; 
+            margin-bottom: 0.75rem; 
             background: #0f172a; 
             padding: 0.75rem; 
             border-radius: 8px; 
         }
 
-        .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 0.75rem; flex-shrink: 0; }
+        .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 0.6rem; flex-shrink: 0; }
 
         /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
@@ -213,7 +234,7 @@
         .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 1rem; }
         .save-btn:hover { background: #fbbf24; }
 
-        .status-msg { text-align: center; color: var(--text-muted); font-size: 1rem; padding: 1.5rem; background: var(--card-bg); border-radius: 10px; border: 1px dashed #334155; }
+        .status-msg { text-align: center; color: var(--text-muted); font-size: 1rem; padding: 1.5rem; background: var(--card-bg); border-radius: 10px; border: 1px dashed #334155; width: 100%; }
     </style>
 </head>
 <body>
@@ -494,11 +515,9 @@
                 const latestSg = latestReading && latestReading.sg != null ? latestReading.sg : batch.measuredFg;
                 const latestTemp = latestReading && latestReading.temp != null ? cToF(latestReading.temp).toFixed(1) + '°F' : 'N/A';
 
-                // Check if the latest reading is within the last 60 minutes (3,600,000 ms)
                 const isLive = latestReading && latestReading.time && (Date.now() - latestReading.time <= 3600000);
                 const liveBadgeHTML = isLive ? `<div class="live-badge"><span class="live-dot"></span>Live</div>` : '';
 
-                // Calculate Apparent Attenuation percentage based on Target FG
                 let attenuationDisplay = 'N/A';
                 if (og != null && latestSg != null && estFg != null && og > estFg) {
                     const attenuation = ((og - latestSg) / (og - estFg)) * 100;
