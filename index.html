@@ -148,7 +148,15 @@
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: #0f172a; padding: 0.85rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; flex-shrink: 0; }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
         .stat-box .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; }
+        .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+
+        /* Beer Glass Graphic */
+        .beer-glass-icon {
+            width: 16px;
+            height: 22px;
+            display: inline-block;
+            vertical-align: middle;
+        }
 
         .chart-container { 
             position: relative; 
@@ -164,7 +172,7 @@
         .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 0.75rem; flex-shrink: 0; }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+        .modal { display: none; position: fixed; top: 0; let: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
         .modal-content { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 450px; border: 1px solid #334155; }
         .modal-content h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
         .form-group { margin-bottom: 1.2rem; }
@@ -206,6 +214,7 @@
     </div>
 
     <!-- Settings Modal -->
+    <div id="settingsModel" class="modal"></div>
     <div id="settingsModal" class="modal">
         <div class="modal-content">
             <h2>Brewfather API Settings</h2>
@@ -242,6 +251,48 @@
             } else {
                 alert('Please enter both User ID and API Key.');
             }
+        }
+
+        // Standard Brewer's SRM to HEX Color Lookup Table
+        function srmToHex(srm) {
+            if (srm == null || isNaN(srm)) return '#f59e0b';
+            
+            // Standard Morey equation / color spectrum approximation mapping for SRM
+            const srmTable = [
+                { srm: 1, hex: '#F8F753' }, { srm: 2, hex: '#F6F513' }, { srm: 3, hex: '#ECE81A' },
+                { srm: 4, hex: '#DFD21D' }, { srm: 5, hex: '#D8BC23' }, { srm: 6, hex: '#D1A825' },
+                { srm: 7, hex: '#CA9627' }, { srm: 8, hex: '#C18527' }, { srm: 9, hex: '#B87628' },
+                { srm: 10, hex: '#B06929' }, { srm: 11, hex: '#A65D2A' }, { srm: 12, hex: '#9F532B' },
+                { srm: 13, hex: '#94492B' }, { srm: 14, hex: '#8D402B' }, { srm: 15, hex: '#85372B' },
+                { srm: 16, hex: '#7C2F2B' }, { srm: 17, hex: '#772A2A' }, { srm: 18, hex: '#6F2229' },
+                { srm: 19, hex: '#681C29' }, { srm: 20, hex: '#631829' }, { srm: 22, hex: '#5B1328' },
+                { srm: 24, hex: '#530F26' }, { srm: 26, hex: '#4D0C25' }, { srm: 28, hex: '#480A24' },
+                { srm: 30, hex: '#430822' }, { srm: 35, hex: '#3A061F' }, { srm: 40, hex: '#31041B' }
+            ];
+
+            if (srm <= 1) return srmTable[0].hex;
+            if (srm >= 40) return srmTable[srmTable.length - 1].hex;
+
+            for (let i = 0; i < srmTable.length - 1; i++) {
+                if (srm >= srmTable[i].srm && srm <= srmTable[i+1].srm) {
+                    return srmTable[i].hex; // Nearest match lookup
+                }
+            }
+            return '#31041B';
+        }
+
+        // Generates a clean vector beer glass SVG filled with the beer color
+        function createBeerGlassSVG(srm) {
+            const hexColor = srmToHex(srm);
+            return `
+            <svg class="beer-glass-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Glass Outline -->
+                <path d="M6 2H18L16 20C15.9 21.1 15 22 13.9 22H10.1C9 22 8.1 21.1 8 20L6 2Z" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5" stroke-linejoin="round"/>
+                <!-- Liquid Fill -->
+                <path d="M6.5 6H17.5L15.8 19.4C15.75 20.3 15 21 14.1 21H9.9C9 21 8.25 20.3 8.2 19.4L6.5 6Z" fill="${hexColor}"/>
+                <!-- Foam / Head -->
+                <path d="M6.3 4H17.7C18.2 4 18.5 4.5 18.3 5C18 5.6 17.3 6 16.5 6H7.5C6.7 6 6 5.6 5.7 5C5.5 4.5 5.8 4 6.3 4Z" fill="#f8fafc" opacity="0.85"/>
+            </svg>`;
         }
 
         function getTapAssignments() {
@@ -352,7 +403,9 @@
                 const style = batch.recipe?.style?.name || batch.style || 'Custom Style';
                 const abv = batch.abv ? batch.abv.toFixed(1) + '%' : (batch.recipe?.abv ? batch.recipe.abv.toFixed(1) + '%' : 'N/A');
                 const ibu = batch.ibu || batch.recipe?.ibu || 'N/A';
-                const srm = batch.color || batch.recipe?.color || 'N/A';
+                const srmVal = batch.color || batch.recipe?.color;
+                const srmDisplay = srmVal != null ? Number(srmVal).toFixed(1) : 'N/A';
+                const beerGlassHTML = createBeerGlassSVG(srmVal);
                 const batchNo = batch.batchNo ? `#${batch.batchNo}` : '';
 
                 const assignedTap = assignments[batch._id];
@@ -372,7 +425,7 @@
                     <div class="stats-grid">
                         <div class="stat-box"><div class="label">ABV</div><div class="value">${abv}</div></div>
                         <div class="stat-box"><div class="label">IBU</div><div class="value">${ibu}</div></div>
-                        <div class="stat-box"><div class="label">SRM</div><div class="value">${srm}</div></div>
+                        <div class="stat-box"><div class="label">SRM</div><div class="value">${beerGlassHTML} ${srmDisplay}</div></div>
                     </div>
                     <div class="beer-footer">
                         <span>Batch ${batchNo}</span>
