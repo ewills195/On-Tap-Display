@@ -3,30 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Badgergander Homebrewery - On Tap</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Badgergander Homebrewery</title>
+    <!-- Modern, geometric font matching the bold logo styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,500;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(15, 23, 42, 0.28); /* Highly transparent unified card background */
-            --stats-bg: rgba(15, 23, 42, 0.22); /* Highly transparent inner stats/charts background */
-            --text-main: #f8fafc;
-            --text-muted: #cbd5e1;
-            --accent: #fbbf24;
-            --ferment-accent: #38bdf8;
-            --plan-accent: #c084fc;
-            --live-green: #22c55e;
+            --bg-base: #090d16;
+            --card-bg: rgba(18, 24, 38, 0.42);
+            --stats-bg: rgba(10, 14, 22, 0.35);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            
+            /* Modern Red & Blue / Taproom Accents */
+            --accent-tap: #f43f5e;     /* Modern Crimson Red */
+            --accent-left: #fb7185;    /* Soft Red / Rose */
+            --ferment-blue: #38bdf8;   /* Electric Craft Blue */
+            --plan-purple: #c084fc;    /* Deep Craft Violet */
+            --live-green: #34d399;     /* Modern Mint Live Dot */
+            --border-glow: rgba(255, 255, 255, 0.12);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         
-        /* Lock full viewport - absolutely no page scrolling */
+        /* Lock full viewport - no page scrolling */
         html, body {
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            background-color: var(--bg-color);
+            background-color: var(--bg-base);
             color: var(--text-main);
         }
 
@@ -34,7 +39,7 @@
             display: flex;
             flex-direction: column;
             padding: 1rem 1.5rem;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.3)), url('background.jpg');
+            background-image: linear-gradient(rgba(9, 13, 22, 0.55), rgba(9, 13, 22, 0.65)), url('background.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -44,62 +49,64 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 1rem; 
-            border-bottom: 2px solid rgba(255, 255, 255, 0.15); 
+            margin-bottom: 0.85rem; 
+            border-bottom: 1px solid var(--border-glow); 
             width: 100%;
             flex-shrink: 0;
-            background: rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            padding: 0.75rem 1rem;
+            background: rgba(13, 17, 26, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0.65rem 1rem;
             border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .brand-container {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.85rem;
         }
 
         .brewery-logo {
-            height: 100px;
+            height: 46px;
             width: auto;
             object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         h1 { 
-            font-size: 4.85rem; 
+            font-size: 1.65rem; 
             font-weight: 800; 
-            letter-spacing: -1px; 
-            background: linear-gradient(45deg, #f59e0b, #fbbf24); 
+            letter-spacing: -0.5px; 
+            background: linear-gradient(135deg, #ffffff 30%, #9ca3af 100%);
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
-            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         
         .settings-btn { 
-            background: rgba(51, 65, 85, 0.5); 
+            background: rgba(30, 41, 59, 0.6); 
             color: var(--text-main); 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            padding: 0.5rem 1rem; 
+            border: 1px solid var(--border-glow); 
+            padding: 0.45rem 0.9rem; 
             border-radius: 8px; 
             cursor: pointer; 
             font-weight: 600; 
-            font-size: 0.9rem; 
-            transition: background 0.2s; 
+            font-size: 0.85rem; 
+            transition: all 0.2s ease; 
             backdrop-filter: blur(4px);
         }
-        .settings-btn:hover { background: rgba(71, 85, 105, 0.7); }
+        .settings-btn:hover { background: rgba(51, 65, 85, 0.8); border-color: rgba(255,255,255,0.3); }
 
         /* Vertical stacking for portrait displays */
         .dashboard-grid {
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
+            gap: 1rem;
             width: 100%;
             flex-grow: 1;
             min-height: 0; 
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
         }
 
         .column-section {
@@ -110,27 +117,28 @@
             min-height: 0;
         }
 
-        /* Give Fermenting extra vertical space for the graph */
+        /* Give Fermenting extra vertical space for the chart */
         #fermenting-section {
-            flex: 1.6;
+            flex: 1.65;
         }
 
         .section-title { 
-            font-size: 1.2rem; 
+            font-size: 1.1rem; 
             font-weight: 700; 
-            margin-bottom: 0.6rem; 
+            margin-bottom: 0.45rem; 
             display: flex; 
             align-items: center; 
             gap: 0.5rem; 
             color: var(--text-main);
             flex-shrink: 0;
             text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            letter-spacing: 0.3px;
         }
 
         .cards-container {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
             overflow-y: auto;
             min-height: 0;
             flex-grow: 1;
@@ -141,7 +149,7 @@
             flex-direction: row;
             overflow-x: auto;
             overflow-y: hidden;
-            gap: 1rem;
+            gap: 0.85rem;
         }
 
         #tap-container .card {
@@ -151,12 +159,12 @@
         
         .card { 
             background: var(--card-bg); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 12px; 
-            padding: 1.25rem; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
+            padding: 1.1rem; 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45); 
+            border: 1px solid var(--border-glow); 
             position: relative; 
             overflow: hidden; 
             display: flex; 
@@ -164,48 +172,73 @@
             justify-content: space-between;
             flex-grow: 1;
             min-height: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s ease;
         }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--accent); }
-        .card.fermenting::before { background: var(--ferment-accent); }
-        .card.planning::before { background: var(--plan-accent); }
         
-        /* Grayed out style for On Deck beers with slightly more opaque text */
+        /* Modern accent bars matching theme hues */
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: var(--accent-tap); }
+        .card.fermenting::before { background: var(--ferment-blue); }
+        .card.planning::before { background: var(--plan-purple); }
+        
+        /* Grayed out style for On Deck beers */
         .card.on-deck {
-            background: rgba(15, 23, 42, 0.22);
-            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(10, 14, 22, 0.25);
+            border-color: rgba(255, 255, 255, 0.06);
         }
         .card.on-deck .beer-header,
         .card.on-deck .stats-grid,
         .card.on-deck .beer-footer {
-            opacity: 0.82;
+            opacity: 0.85;
         }
         .card.on-deck::before {
-            background: #64748b;
+            background: #475569;
         }
 
-        .beer-header { margin-bottom: 0.75rem; flex-shrink: 0; }
+        .beer-header { margin-bottom: 0.6rem; flex-shrink: 0; }
         .beer-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
-        .beer-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 4px rgba(0,0,0,0.7); }
-        .beer-style { font-size: 0.95rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
-        .card.fermenting .beer-style { color: var(--ferment-accent); }
-        .card.planning .beer-style { color: var(--plan-accent); }
+        
+        .beer-name { 
+            font-size: 1.3rem; 
+            font-weight: 800; 
+            color: #ffffff; 
+            margin-bottom: 0.1rem; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: -0.3px;
+        }
+        
+        .beer-style { 
+            font-size: 0.85rem; 
+            color: var(--accent-left); 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.75px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6); 
+        }
+        .card.fermenting .beer-style { color: var(--ferment-blue); }
+        .card.planning .beer-style { color: var(--plan-purple); }
         .card.on-deck .beer-style { color: #94a3b8; }
 
         .batch-no {
             font-weight: 400;
             color: var(--text-muted);
-            margin-left: 0.4rem;
-            font-size: 0.85rem;
+            margin-left: 0.35rem;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .tap-badge {
-            background: rgba(51, 65, 85, 0.5);
+            background: rgba(30, 41, 59, 0.6);
             color: var(--text-muted);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 0.25rem 0.65rem;
+            border: 1px solid var(--border-glow);
+            padding: 0.2rem 0.55rem;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -214,29 +247,31 @@
             transition: all 0.2s;
             backdrop-filter: blur(4px);
         }
-        .tap-badge:hover { background: rgba(71, 85, 105, 0.7); color: #fff; }
+        .tap-badge:hover { background: rgba(51, 65, 85, 0.85); color: #fff; }
         .tap-badge.assigned {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
+            background: var(--accent-tap);
+            color: #fff;
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 2px 8px rgba(244, 63, 94, 0.4);
         }
         .card.on-deck .tap-badge.assigned {
-            background: #64748b;
-            color: #fff;
+            background: #475569;
+            color: #cbd5e1;
             border-color: #64748b;
+            box-shadow: none;
         }
 
-        /* Live Data Indicator */
+        /* Modern Live Data Indicator Pulse */
         .live-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            background: rgba(34, 197, 94, 0.2);
+            gap: 0.35rem;
+            background: rgba(52, 211, 153, 0.12);
             color: var(--live-green);
-            border: 1px solid rgba(34, 197, 94, 0.5);
-            padding: 0.25rem 0.6rem;
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            padding: 0.2rem 0.55rem;
             border-radius: 6px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.75px;
@@ -245,29 +280,61 @@
         }
 
         .live-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background-color: var(--live-green);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--live-green);
+            box-shadow: 0 0 8px var(--live-green);
             animation: pulse-live 1.8s infinite ease-in-out;
         }
 
         @keyframes pulse-live {
             0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.35; transform: scale(0.85); }
+            50% { opacity: 0.3; transform: scale(0.8); }
             100% { opacity: 1; transform: scale(1); }
         }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: var(--stats-bg); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; text-align: center; flex-shrink: 0; align-items: center; border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); }
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 0.5rem; 
+            background: var(--stats-bg); 
+            padding: 0.65rem; 
+            border-radius: 8px; 
+            margin-bottom: 0.65rem; 
+            text-align: center; 
+            flex-shrink: 0; 
+            align-items: center; 
+            border: 1px solid rgba(255, 255, 255, 0.06); 
+            backdrop-filter: blur(4px); 
+        }
         .stats-grid.four-col { grid-template-columns: repeat(4, 1fr); }
-        .stat-box .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .stat-box .value { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+        
+        .stat-box .label { 
+            font-size: 0.6rem; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            font-weight: 700; 
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-box .value { 
+            font-size: 1.05rem; 
+            font-weight: 700; 
+            color: #fff; 
+            margin-top: 0.1rem; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.4rem; 
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            font-family: 'JetBrains Mono', monospace;
+        }
 
-        /* Larger Beer Glass Graphic for clear SRM color visibility */
+        /* Larger Beer Glass Graphic */
         .beer-glass-icon {
-            width: 30px;
-            height: 40px;
+            width: 26px;
+            height: 35px;
             display: inline-block;
             vertical-align: middle;
             flex-shrink: 0;
@@ -278,28 +345,39 @@
             position: relative; 
             flex-grow: 1; 
             width: 100%; 
-            min-height: 150px;
-            margin-bottom: 0.75rem; 
+            min-height: 130px;
+            margin-bottom: 0.65rem; 
             background: var(--stats-bg); 
-            padding: 0.75rem; 
+            padding: 0.5rem; 
             border-radius: 8px; 
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(4px);
         }
 
-        .beer-footer { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 0.6rem; flex-shrink: 0; }
+        .beer-footer { 
+            font-size: 0.78rem; 
+            color: var(--text-muted); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-top: 1px solid rgba(255, 255, 255, 0.08); 
+            padding-top: 0.5rem; 
+            flex-shrink: 0; 
+            font-family: 'JetBrains Mono', monospace;
+        }
 
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(8px); }
-        .modal-content { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 450px; border: 1px solid rgba(255,255,255,0.2); }
-        .modal-content h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
-        .form-group input { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(15, 23, 42, 0.5); color: #fff; font-size: 1rem; }
-        .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 1rem; }
-        .save-btn:hover { background: #fbbf24; }
+        /* Modal styling matching theme */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 8, 15, 0.85); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(10px); }
+        .modal-content { background: rgba(18, 24, 38, 0.92); backdrop-filter: blur(16px); padding: 2.2rem; border-radius: 16px; width: 100%; max-width: 420px; border: 1px solid var(--border-glow); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        .modal-content h2 { margin-bottom: 1.2rem; font-size: 1.35rem; font-weight: 700; color: #fff; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+        .form-group input { width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(10, 14, 22, 0.7); color: #fff; font-size: 0.95rem; font-family: 'JetBrains Mono', monospace; }
+        .form-group input:focus { outline: none; border-color: var(--accent-tap); }
+        .save-btn { width: 100%; background: var(--accent-tap); color: #fff; border: none; padding: 0.7rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 0.8rem; transition: background 0.2s; font-size: 0.95rem; }
+        .save-btn:hover { background: #e11d48; }
 
-        .status-msg { text-align: center; color: var(--text-muted); font-size: 1rem; padding: 1.5rem; background: var(--card-bg); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.2); width: 100%; backdrop-filter: blur(4px); }
+        .status-msg { text-align: center; color: var(--text-muted); font-size: 0.95rem; padding: 1.2rem; background: var(--card-bg); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.15); width: 100%; backdrop-filter: blur(4px); }
     </style>
 </head>
 <body>
@@ -400,7 +478,7 @@
             const hexColor = srmToHex(srm);
             return `
             <svg class="beer-glass-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 2H18L16 20C15.9 21.1 15 22 13.9 22H10.1C9 22 8.1 21.1 8 20L6 2Z" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M6 2H18L16 20C15.9 21.1 15 22 13.9 22H10.1C9 22 8.1 21.1 8 20L6 2Z" fill="#090d16" stroke="#cbd5e1" stroke-width="1.5" stroke-linejoin="round"/>
                 <path d="M6.5 6H17.5L15.8 19.4C15.75 20.3 15 21 14.1 21H9.9C9 21 8.25 20.3 8.2 19.4L6.5 6Z" fill="${hexColor}"/>
                 <path d="M6.3 4H17.7C18.2 4 18.5 4.5 18.3 5C18 5.6 17.3 6 16.5 6H7.5C6.7 6 6 5.6 5.7 5C5.5 4.5 5.8 4 6.3 4Z" fill="#f8fafc" opacity="0.85"/>
             </svg>`;
@@ -503,7 +581,6 @@
             }
             if (cleaned) saveTapAssignments(assignments);
 
-            // Strict ordering: Left Tap (1), Right Tap (2), On Deck (3), Unassigned (4)
             const order = { 'Left Tap': 1, 'Right Tap': 2, 'On Deck': 3 };
             const sorted = [...batches].sort((a, b) => {
                 const rankA = order[assignments[a._id]] || 4;
@@ -640,7 +717,7 @@
                                     label: 'SG',
                                     data: sgPoints,
                                     borderColor: '#38bdf8',
-                                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                                    backgroundColor: 'rgba(56, 189, 248, 0.15)',
                                     borderWidth: 2,
                                     pointRadius: 0,
                                     fill: true,
@@ -666,21 +743,21 @@
                             plugins: {
                                 legend: {
                                     display: true,
-                                    labels: { color: '#cbd5e1', boxWidth: 8, font: { size: 10 } }
+                                    labels: { color: '#cbd5e1', boxWidth: 8, font: { size: 10, family: 'Plus Jakarta Sans' } }
                                 }
                             },
                             scales: {
-                                x: { ticks: { color: '#cbd5e1', maxTicksLimit: 6, font: { size: 10 } }, grid: { display: false } },
+                                x: { ticks: { color: '#94a3b8', maxTicksLimit: 6, font: { size: 10, family: 'JetBrains Mono' } }, grid: { display: false } },
                                 y: {
                                     type: 'linear',
                                     position: 'left',
-                                    ticks: { color: '#38bdf8', font: { size: 10 } },
-                                    grid: { color: 'rgba(255, 255, 255, 0.08)' }
+                                    ticks: { color: '#38bdf8', font: { size: 10, family: 'JetBrains Mono' } },
+                                    grid: { color: 'rgba(255, 255, 255, 0.06)' }
                                 },
                                 y1: {
                                     type: 'linear',
                                     position: 'right',
-                                    ticks: { color: '#fb923c', font: { size: 10 }, callback: v => v + '°' },
+                                    ticks: { color: '#fb923c', font: { size: 10, family: 'JetBrains Mono' }, callback: v => v + '°' },
                                     grid: { drawOnChartArea: false }
                                 }
                             }
@@ -726,7 +803,7 @@
                         <div class="beer-style">${style}${batchSpan}</div>
                     </div>
                     <div class="stats-grid">
-                        <div class="stat-box"><div class="label">Brew Date</div><div class="value" style="font-size: 0.95rem;">${brewDateStr}</div></div>
+                        <div class="stat-box"><div class="label">Brew Date</div><div class="value" style="font-size: 0.9rem;">${brewDateStr}</div></div>
                         <div class="stat-box"><div class="label">Est. ABV</div><div class="value">${estAbv}</div></div>
                         <div class="stat-box"><div class="label">Est. IBU</div><div class="value">${estIbu}</div></div>
                     </div>
